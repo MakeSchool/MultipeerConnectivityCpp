@@ -57,7 +57,7 @@ std::vector<std::string> getPeerList();
 To recieve data and be notified of connection status changes, you must implement the pure virtual functions of the `NetworkingDelegate` class. Then assign an instance of the class implementing `NetworkingDelegate` as a delegate of `NetworkingWrapper` using `void setDelegate(NetworkingDelegate* delegate)`.
 
 
-```
+```C++
 virtual void receivedData(const void* data, unsigned long length);
 virtual void stateChanged(ConnectionState state);
 ```
