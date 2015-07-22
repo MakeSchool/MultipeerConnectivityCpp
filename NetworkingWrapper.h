@@ -36,8 +36,6 @@ public:
     
     void startAdvertisingAvailability();
     
-    void stopAdvertisingAvailability();
-    
     void showPeerList();
     
     void sendData(const void* data, unsigned long length);
@@ -45,6 +43,8 @@ public:
     static const char * getDeviceName();
     
     void disconnect();
+    
+    std::vector<std::string> getPeerList();
     
 private:
     NetworkManager* networkManager;

@@ -17,12 +17,12 @@ class NetworkManagerDelegate;
 
 - (void)startAdvertisingAvailability;
 
-- (void)stopAdvertisingAvailability;
-
 - (void)showPeerList;
 
 - (void)sendData:(NSData*)data;
 
 - (void)disconnect;
+
+- (NSArray*)getPeerList;
 
 @end

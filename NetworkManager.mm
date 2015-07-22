@@ -44,11 +44,6 @@
     [_advertiserAssistant start];
 }
 
-- (void)stopAdvertisingAvailability
-{
-    [_advertiserAssistant stop];
-}
-
 - (void)showPeerList
 {
     // Display view listing nearby peers
@@ -78,6 +73,21 @@
 {
     NSError* error;
     [self.session sendData:data toPeers:self.session.connectedPeers withMode:MCSessionSendDataReliable error:&error];
+}
+
+- (NSArray*)getPeerList
+{
+    NSMutableArray* peerDisplayNames = [@[] mutableCopy];
+    
+    if (self.session && self.session.connectedPeers)
+    {
+        for (MCPeerID* otherPeerID in self.session.connectedPeers)
+        {
+            [peerDisplayNames addObject:[NSString stringWithString:otherPeerID.displayName]];
+        }
+    }
+    
+    return [NSArray arrayWithArray:peerDisplayNames];
 }
 
 #pragma mark - MCBrowserViewControllerDelegate methods
