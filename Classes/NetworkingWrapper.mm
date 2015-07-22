@@ -37,6 +37,11 @@ void NetworkingWrapper::startAdvertisingAvailability()
     [this->networkManager startAdvertisingAvailability];
 }
 
+void NetworkingWrapper::stopAdvertisingAvailability()
+{
+    [this->networkManager stopAdvertisingAvailability];
+}
+
 void NetworkingWrapper::showPeerList()
 {
     [this->networkManager showPeerList];

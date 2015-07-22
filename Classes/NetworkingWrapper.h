@@ -43,6 +43,11 @@ public:
     void startAdvertisingAvailability();
     
     /**
+     *  Stop this device from being discoverable
+     */
+    void stopAdvertisingAvailability();
+    
+    /**
      *  Displays a built-in modal view that displays peers and allows this device to invite them to connect
      */
     void showPeerList();
