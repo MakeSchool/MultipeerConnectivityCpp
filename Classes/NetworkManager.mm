@@ -40,7 +40,10 @@
     _session = [[MCSession alloc] initWithPeer:self.peerID securityIdentity:nil encryptionPreference:MCEncryptionNone];
     _session.delegate = self;
 
-    _advertiserAssistant = [[MCAdvertiserAssistant alloc] initWithServiceType:@"doodler-game" discoveryInfo:nil session:_session];
+    NSDictionary *bundleInfo = [[NSBundle mainBundle] infoDictionary];
+    NSString *appName = [bundleInfo objectForKey:@"CFBundleDisplayName"];
+    
+    _advertiserAssistant = [[MCAdvertiserAssistant alloc] initWithServiceType:appName discoveryInfo:nil session:_session];
     [_advertiserAssistant start];
 }
 
@@ -51,8 +54,11 @@
 
 - (void)showPeerList
 {
+    NSDictionary *bundleInfo = [[NSBundle mainBundle] infoDictionary];
+    NSString *appName = [bundleInfo objectForKey:@"CFBundleDisplayName"];
+    
     // Display view listing nearby peers
-    MCBrowserViewController *browserViewController = [[MCBrowserViewController alloc] initWithServiceType:@"doodler-game" session:_session];
+    MCBrowserViewController *browserViewController = [[MCBrowserViewController alloc] initWithServiceType:appName session:_session];
     
     browserViewController.delegate = self;
     browserViewController.minimumNumberOfPeers = 1;
