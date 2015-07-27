@@ -13,7 +13,9 @@
 
 NetworkingWrapper::NetworkingWrapper()
 {
-    this->networkManager = [[NetworkManager alloc] init];
+    NSString* appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleName"];
+    
+    this->networkManager = [[NetworkManager alloc] initWithServiceName:appName minumumNumberOfPeers:1 andMaximumNumberOfPeers:1];
     [this->networkManager setDelegate:this];
     [networkManager retain];
 }
@@ -26,6 +28,21 @@ NetworkingWrapper::~NetworkingWrapper()
 
 #pragma mark -
 #pragma mark Public Methods
+
+void NetworkingWrapper::setServiceName(const std::string &serviceName)
+{
+    this->networkManager.serviceName = [NSString stringWithUTF8String:serviceName.c_str()];
+}
+
+void NetworkingWrapper::setMinimumPeers(unsigned int minimumPeers)
+{
+    this->networkManager.minPeers = minimumPeers;
+}
+
+void NetworkingWrapper::setMaximumPeers(unsigned int maximumPeers)
+{
+    this->networkManager.maxPeers = maximumPeers;
+}
 
 void NetworkingWrapper::setDelegate(NetworkingDelegate* delegate)
 {

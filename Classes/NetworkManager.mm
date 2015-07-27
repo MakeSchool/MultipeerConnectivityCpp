@@ -30,6 +30,19 @@
     NetworkManagerDelegate* _delegate;
 }
 
+- (instancetype)initWithServiceName:(NSString *)serviceName minumumNumberOfPeers:(NSUInteger)minimum andMaximumNumberOfPeers:(NSUInteger)maximum
+{
+    if (self = [super init])
+    {
+        self.connectedPeers = [NSMutableArray array];
+        self.serviceName = serviceName;
+        self.minPeers = minimum;
+        self.maxPeers = maximum;
+    }
+    
+    return self;
+}
+
 - (void)setDelegate:(NetworkManagerDelegate*)p_delegate
 {
     _delegate = p_delegate;
@@ -38,15 +51,11 @@
 - (void)startAdvertisingAvailability
 {
     self.peerID = [[MCPeerID alloc] initWithDisplayName:[UIDevice currentDevice].name];
-    self.connectedPeers = [@[] mutableCopy];
 
     _session = [[MCSession alloc] initWithPeer:self.peerID securityIdentity:nil encryptionPreference:MCEncryptionNone];
     _session.delegate = self;
-
-    NSDictionary *bundleInfo = [[NSBundle mainBundle] infoDictionary];
-    NSString *appName = [bundleInfo objectForKey:@"CFBundleDisplayName"];
     
-    _advertiserAssistant = [[MCAdvertiserAssistant alloc] initWithServiceType:appName discoveryInfo:nil session:_session];
+    _advertiserAssistant = [[MCAdvertiserAssistant alloc] initWithServiceType:self.serviceName discoveryInfo:nil session:_session];
     [_advertiserAssistant start];
 }
 
@@ -56,16 +65,13 @@
 }
 
 - (void)showPeerList
-{
-    NSDictionary *bundleInfo = [[NSBundle mainBundle] infoDictionary];
-    NSString *appName = [bundleInfo objectForKey:@"CFBundleDisplayName"];
-    
+{    
     // Display view listing nearby peers
-    MCBrowserViewController *browserViewController = [[MCBrowserViewController alloc] initWithServiceType:appName session:_session];
+    MCBrowserViewController *browserViewController = [[MCBrowserViewController alloc] initWithServiceType:self.serviceName session:_session];
     
     browserViewController.delegate = self;
-    browserViewController.minimumNumberOfPeers = 1;
-    browserViewController.maximumNumberOfPeers = 1;
+    browserViewController.minimumNumberOfPeers = self.minPeers;
+    browserViewController.maximumNumberOfPeers = self.maxPeers;
     
     UIWindow *window = [UIApplication sharedApplication].keyWindow;
     UIViewController *rootViewController = window.rootViewController;
@@ -76,6 +82,7 @@
 - (void)disconnect
 {
     [self.session disconnect];
+    [self.connectedPeers removeAllObjects];
     
     self.session.delegate = nil;
     
@@ -104,6 +111,7 @@
     return [NSArray arrayWithArray:peerDisplayNames];
 }
 
+#pragma mark -
 #pragma mark - MCBrowserViewControllerDelegate methods
 
 // Override this method to filter out peers based on application specific needs
@@ -208,6 +216,17 @@
 }
 
 #pragma mark -
+#pragma mark Getters / Setters
+
+- (void)setServiceName:(NSString *)serviceName
+{
+    if (![_serviceName isEqualToString:serviceName])
+    {
+        _serviceName = [[self stringFilteredForBonjourDiscoveryServiceName:serviceName] copy];
+    }
+}
+
+#pragma mark -
 #pragma mark Private Methods
 
 - (MCPeerID*)peerIDInConnectedPeersWithDisplayName:(NSString*)displayName
@@ -221,6 +240,30 @@
     }
     
     return nil;
+}
+
+- (NSString*)stringFilteredForBonjourDiscoveryServiceName:(NSString*)inputString
+{
+    // Bonjour discovery service names must contain only
+    // lowercase ascii letters or numbers and hyphens
+    // of maximum length 15 characters
+    
+    NSString* lowercase = [inputString lowercaseString];
+    NSString* withoutSpaces = [lowercase stringByReplacingOccurrencesOfString:@" " withString:@"-"];
+    
+    NSCharacterSet* characterSet = [[NSCharacterSet characterSetWithCharactersInString:@"abcdefghijklmnopqrstuvwxyz1234567890-"] invertedSet];
+    NSString* filtered = [[withoutSpaces componentsSeparatedByCharactersInSet:characterSet] componentsJoinedByString:@""];
+    
+    if (filtered.length > 15)
+    {
+        filtered = [withoutSpaces substringToIndex:15];
+    }
+    else if (filtered.length == 0)
+    {
+        filtered = @"oops";
+    }
+    
+    return filtered;
 }
 
 @end

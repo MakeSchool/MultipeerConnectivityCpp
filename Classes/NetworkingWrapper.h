@@ -18,7 +18,7 @@ typedef struct objc_object NetworkManager;
 #endif
 
 // Classes that want to be notified by networking activity should inherit from this class
-// and set themselves as the delegate
+// and set themselves as the delegate of NetworkingWrapper
 class NetworkingDelegate
 {
 public:
@@ -31,6 +31,23 @@ class NetworkingWrapper : public NetworkManagerDelegate
 public:
     NetworkingWrapper();
     ~NetworkingWrapper();
+    
+    /**
+     *  Set the name that will be used to advertise your networking service.
+     *  It should be in the same format as a Bonjour service type: up to 15 characters long 
+     *  valid characters include ASCII lowercase letters, numbers, and the hyphen.
+     */
+    void setServiceName(const std::string& serviceName);
+    
+    /**
+     * The minimum number of peers the session should expect.
+     */
+    void setMinimumPeers(unsigned int minimumPeers);
+    
+    /**
+     * The maximum number of peers the session should expect.
+     */
+    void setMaximumPeers(unsigned int maximumPeers);
     
     /**
      *  Set the delegate class that will be informed of connection state changes, and will be given the data recieved from the network

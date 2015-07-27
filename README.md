@@ -12,6 +12,23 @@ It abstracts away some potentially important features of Multipeer Connectivity,
     
 ```C++
 /**
+ *  Set the name that will be used to advertise your networking service.
+ *  It should be in the same format as a Bonjour service type: up to 15 characters long 
+ *  valid characters include ASCII lowercase letters, numbers, and the hyphen.
+ */
+void setServiceName(const std::string& serviceName);
+    
+/**
+ * The minimum number of peers the session should expect.
+ */
+void setMinimumPeers(unsigned int minimumPeers);
+    
+/**
+ * The maximum number of peers the session should expect.
+ */
+void setMaximumPeers(unsigned int maximumPeers);
+
+/**
  *  Set the delegate class that will be informed of connection state changes, and will be given the data recieved from the network
  */
 void setDelegate(NetworkingDelegate* delegate);
