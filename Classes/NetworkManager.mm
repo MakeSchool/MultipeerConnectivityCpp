@@ -21,6 +21,8 @@
 @property (nonatomic, strong) MCPeerID* peerID;
 @property (retain, nonatomic) MCAdvertiserAssistant *advertiserAssistant;
 
+@property (atomic, strong) NSMutableArray* connectedPeers;
+
 @end
 
 @implementation NetworkManager
@@ -36,6 +38,7 @@
 - (void)startAdvertisingAvailability
 {
     self.peerID = [[MCPeerID alloc] initWithDisplayName:[UIDevice currentDevice].name];
+    self.connectedPeers = [@[] mutableCopy];
 
     _session = [[MCSession alloc] initWithPeer:self.peerID securityIdentity:nil encryptionPreference:MCEncryptionNone];
     _session.delegate = self;
@@ -90,9 +93,9 @@
 {
     NSMutableArray* peerDisplayNames = [@[] mutableCopy];
     
-    if (self.session && self.session.connectedPeers)
+    if (self.session && self.connectedPeers)
     {
-        for (MCPeerID* otherPeerID in self.session.connectedPeers)
+        for (MCPeerID* otherPeerID in self.connectedPeers)
         {
             [peerDisplayNames addObject:[NSString stringWithString:otherPeerID.displayName]];
         }
@@ -127,6 +130,21 @@
 // Remote peer changed state
 - (void)session:(MCSession *)session peer:(MCPeerID *)peerID didChangeState:(MCSessionState)state
 {
+    if (state == MCSessionStateConnected)
+    {
+        [self.connectedPeers addObject:peerID];
+        
+        [[UIApplication sharedApplication].keyWindow.rootViewController dismissModalViewControllerAnimated:true];
+    }
+    else
+    {
+        MCPeerID* existingPeerObject = [self peerIDInConnectedPeersWithDisplayName:peerID.displayName];
+        if (existingPeerObject)
+        {
+            [self.connectedPeers removeObject:existingPeerObject];
+        }
+    }
+    
     ConnectionState changedState;
     NSString* stateString = @"";
     
@@ -135,8 +153,6 @@
         case MCSessionStateConnected:
             changedState = ConnectionState::CONNECTED;
             stateString = @"connected to";
-            
-            [[UIApplication sharedApplication].keyWindow.rootViewController dismissModalViewControllerAnimated:true];
             break;
             
         case MCSessionStateConnecting:
@@ -189,6 +205,22 @@
 - (void)session:(MCSession *)session didFinishReceivingResourceWithName:(NSString *)resourceName fromPeer:(MCPeerID *)peerID atURL:(NSURL *)localURL withError:(NSError *)error
 {
     
+}
+
+#pragma mark -
+#pragma mark Private Methods
+
+- (MCPeerID*)peerIDInConnectedPeersWithDisplayName:(NSString*)displayName
+{
+    for (MCPeerID* peerID in self.connectedPeers)
+    {
+        if ([peerID.displayName isEqualToString:displayName])
+        {
+            return peerID;
+        }
+    }
+    
+    return nil;
 }
 
 @end
