@@ -50,6 +50,7 @@ void showPeerList();
     
 /**
  *  Sends the data in the specified address in memory with a given length over the network to the connected peers
+ *  Mode options include reliable (probably, but not guaranteed to be TCP) and unreliable (probably but not guaranteed to be UDP)
  */
 void sendData(const void* data, unsigned long length);
     
