@@ -1,6 +1,6 @@
 //
 //  NetworkManager.m
-//  Doodler
+//  MultipeerConnectivityCpp
 //
 //  Created by Daniel Haaser on 5/25/15.
 //

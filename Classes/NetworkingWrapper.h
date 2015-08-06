@@ -1,13 +1,13 @@
 //
 //  NetworkingWrapper.h
-//  Doodler
+//  MultipeerConnectivityCpp
 //
 //  Created by Daniel Haaser on 5/25/15.
 //
 //
 
-#ifndef __Doodler__NetworkingWrapper__
-#define __Doodler__NetworkingWrapper__
+#ifndef __MultipeerConnectivityCpp__NetworkingWrapper__
+#define __MultipeerConnectivityCpp__NetworkingWrapper__
 
 #include "NetworkManagerDelegate.h"
 
@@ -104,4 +104,4 @@ private:
     void stateChanged(ConnectionState state);
 };
 
-#endif /* defined(__Doodler__NetworkingWrapper__) */
+#endif /* defined(__MultipeerConnectivityCpp__NetworkingWrapper__) */
