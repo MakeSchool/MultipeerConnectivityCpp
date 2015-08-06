@@ -90,10 +90,10 @@
     self.session = nil;
 }
 
-- (void)sendData:(NSData*)data
+- (void)sendData:(NSData*)data withMode:(MCSessionSendDataMode)mode
 {
     NSError* error;
-    [self.session sendData:data toPeers:self.session.connectedPeers withMode:MCSessionSendDataReliable error:&error];
+    [self.session sendData:data toPeers:self.session.connectedPeers withMode:mode error:&error];
 }
 
 - (NSArray*)getPeerList

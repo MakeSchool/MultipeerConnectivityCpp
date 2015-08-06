@@ -27,7 +27,7 @@ class NetworkManagerDelegate;
 
 - (void)showPeerList;
 
-- (void)sendData:(NSData*)data;
+- (void)sendData:(NSData*)data withMode:(MCSessionSendDataMode)mode;
 
 - (void)disconnect;
 

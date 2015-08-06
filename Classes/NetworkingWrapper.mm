@@ -64,10 +64,18 @@ void NetworkingWrapper::showPeerList()
     [this->networkManager showPeerList];
 }
 
-void NetworkingWrapper::sendData(const void *data, unsigned long length)
+void NetworkingWrapper::sendData(const void *data, unsigned long length, SendDataMode mode)
 {
+    MCSessionSendDataMode mcSessionMode = MCSessionSendDataReliable;
+    
+    switch (mode)
+    {
+        case SendDataMode::Reliable: mcSessionMode = MCSessionSendDataReliable; break;
+        case SendDataMode::Unreliable: mcSessionMode = MCSessionSendDataUnreliable; break;
+    }
+    
     NSData* dataToSend = [NSData dataWithBytes:data length:length];
-    [this->networkManager sendData:dataToSend];
+    [this->networkManager sendData:dataToSend withMode:mcSessionMode];
 }
 
 void NetworkingWrapper::disconnect()

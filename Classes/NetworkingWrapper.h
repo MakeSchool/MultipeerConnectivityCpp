@@ -11,6 +11,12 @@
 
 #include "NetworkManagerDelegate.h"
 
+enum class SendDataMode
+{
+    Reliable,   // Not guaranteed by Multipeer Connectivity, but probably TCP
+    Unreliable  // Not guaranteed by Multipeer Connectivity, but probably UDP
+};
+
 #ifdef __OBJC__
 @class NetworkManager;
 #else
@@ -72,7 +78,7 @@ public:
     /**
      *  Sends the data in the specified address in memory with a given length over the network to the connected peers
      */
-    void sendData(const void* data, unsigned long length);
+    void sendData(const void* data, unsigned long length, SendDataMode mode);
     
     /**
      *  Retrieves the name of the this device
